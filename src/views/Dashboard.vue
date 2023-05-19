@@ -27,7 +27,7 @@
     setup() {
       // initiate component state
       const state = reactive({
-        dialog: true,
+        dialog: false,
       });
 
       const closeDialog = () => {
