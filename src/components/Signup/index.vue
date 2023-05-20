@@ -1,115 +1,95 @@
 <template>
     <div class="signup-container">
-        <v-row class="signup-header pd-0">
-            <div class="header-picture pd-0">
-                <img src="@/assets/Rectangle 60.svg" class="header-background-image">
-                <img src="@/assets/logo 2.svg" class="header-logo-image">
-                <div class="header-text-wrapper">
-                    <span class="header-text purple">BLUE</span> 
-                    <span class="header-text yellow">GAME</span> 
-                    <br>
-                    <p class="header-text2 white">
-                        Register at 
-                        <br>
-                        BLUE.GAME
-                    </p>
-                </div>
-                <img src="@/assets/Coin.svg" class="header-image">
-                <v-btn
-                    class="close-button"
-                    icon="true"
-                    @click="$emit('close')"
-                >
-                    <v-icon color="white">mdi-close</v-icon>
-                </v-btn>
-            </div>
-        </v-row>
-        <v-row class="signup-body">
-        <v-form ref="form">
-            <v-row v-if="isShowEmailValidaton" class="email-validation-container">
-                <div class="email-validation">
-                    <img src="@/assets/Caution.svg" width="16" class="email-validation-img" />
-                    <span class="label-text email-validation-span">Please fill in this field</span>
-                </div>
-            </v-row>
-            <v-row style="margin-top: -20px;">
-                <v-text-field 
-                    label="Email Address"
-                    class="form-textfield dark-textfield" 
-                    variant="solo"
-                    density="comfortable"
-                    v-model="formData.emailAddress"
-                    :onblur="handleOnEmailInputBlur"
-                />
-            </v-row>
-            <v-row style="margin-top: 12px;">
-                <v-text-field 
-                    label="Password"
-                    class="form-textfield dark-textfield" 
-                    variant="solo"
-                    density="comfortable"
-                    type="password"
-                    v-model="formData.password"
-                    :onfocus="handleOnPasswordInputFocus"
-                />
-            </v-row>
-            <v-row style="margin-top: 24px;">
-                <v-text-field 
-                    label="Referral/Promo Code(Optional)"
-                    class="form-textfield normal-textfield" 
-                    variant="solo"
-                    density="comfortable"
-                    v-model="formData.promoCode"
-                    :onfocus="handleOnPromoCodeInputFocus"
-                />
-            </v-row>
-            <v-row style="margin-top: -4px;">
-                <v-col md="1" lg="1" sm="1" class="pl-1">
-                    <v-checkbox
-                        v-model="formData.isAgreed"
-                        color="success"
-                        hide-details
-                        class="agreement-checkbox"
-                    ></v-checkbox>
-                </v-col>
-                <v-col md="10" lg="10" sm="10">
-                    <p class="agreement-text">
-                        I agree to the <span class="white">User Agreement & confirm</span> I am at least 18 years old
-                    </p>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-btn
-                    class="signup-button"
-                    :color="isFormDataReady ? '#32CFEC' : '#353652'"
-                    width="-webkit-fill-available"
-                    height="60px"
-                    rounded="12px"
-                    :disabled="!isFormDataReady"
-                    :onclick="handleSignupFormSubmit"
-                >
-                    <p :class="isFormDataReady ? 'button-text black' : 'button-text white'">
+        <SignupHeader v-if="currentPage !== PAGE_TYPE.DISPLAY_NAME" />
+        <v-row class="signup-body pt-6">
+            <!-- SIGN UP FORM  -->
+            <v-form v-if="currentPage === PAGE_TYPE.SIGNUP_FORM" ref="form">
+                <v-row class="relative mt-0">
+                    <v-text-field 
+                        label="Email Address"
+                        class="form-textfield dark-textfield" 
+                        variant="solo"
+                        density="comfortable"
+                        v-model="formData.emailAddress"
+                        :onblur="handleOnEmailInputBlur"
+                    />
+                    <ValidationBox
+                        v-if="isShowEmailValidaton"
+                        title="Please fill in this field"
+                        :withCautionIcon="false"
+                    />
+                </v-row>
+                <v-row class="mt-2 relative">
+                    <v-text-field 
+                        label="Password"
+                        class="form-textfield dark-textfield" 
+                        variant="solo"
+                        density="comfortable"
+                        :type="isShowPassword ? 'text' : 'password'"
+                        :append-inner-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                        v-model="formData.password"
+                        :onfocus="handleOnPasswordInputFocus"
+                        :onblur="handleOnPasswordInputBlur"
+                        @click:append-inner="isShowPassword = !isShowPassword"
+                    />
+                    <ValidationBox
+                        v-if="isShowPasswordValidation"
+                        :descriptionList="passwordValidationStrList"
+                        :validationList="passwordValidationList"
+                    />
+                </v-row>
+                <v-row class="mt-4">
+                    <v-text-field 
+                        label="Referral/Promo Code(Optional)"
+                        class="form-textfield normal-textfield" 
+                        variant="solo"
+                        density="comfortable"
+                        v-model="formData.promoCode"
+                        :onfocus="handleOnPromoCodeInputFocus"
+                    />
+                </v-row>
+                <v-row class="mt-2">
+                    <v-col cols="1" class="pl-1">
+                        <v-checkbox
+                            v-model="formData.isAgreed"
+                            color="success"
+                            hide-details
+                            class="agreement-checkbox"
+                        />
+                    </v-col>
+                    <v-col cols="10">
+                        <p class="agreement-text">
+                            I agree to the <span class="white pointer">User Agreement & confirm</span> I am at least 18 years old
+                        </p>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-btn
+                        class="ma-3 button-bright"
+                        width="-webkit-fill-available"
+                        height="60px"
+                        :disabled="!isFormDataReady"
+                        :onclick="handleSignupFormSubmit"
+                    >
                         Sign Up
-                    </p>
-                </v-btn>
-            </v-row>
-            <v-row>
-                <v-col md="8" lg="8" sm="8" class="pr-0">
-                    <p class="signin-text">Already have an account? </p>
-                </v-col>
-                <v-col md="4" lg="4" sm="4">
-                    <p class="signin-text2">Sign in </p>
-                </v-col>
-            </v-row>
-            <v-row style="margin-top: 12px;">
-                <p class="divide-text">OR</p>
-                <v-divider
-                    color="white"
-                />
-            </v-row>
-            <v-row style="margin-top: 40px; margin-bottom: -20px;">
-                <v-col md="2" lg="2" sm="2" />
-                    <v-col md="8" lg="8" sm="8">
+                    </v-btn>
+                </v-row>
+                <v-row>
+                    <v-col cols="8" class="pr-0">
+                        <p class="signin-text">Already have an account? </p>
+                    </v-col>
+                    <v-col cols="4">
+                        <p class="signin-text2">Sign in </p>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-2">
+                    <p class="divide-text">OR</p>
+                    <v-divider
+                        color="white"
+                    />
+                </v-row>
+                <v-row class="mt-10">
+                    <v-col cols="8" offset="2">
                         <div class="d-flex justify-space-around bg-surface-variant social-icon-wrapper">
                             <v-sheet
                                 v-for="n in 4"
@@ -127,21 +107,109 @@
                             </v-sheet>
                         </div>
                     </v-col>
-                <v-col md="2" lg="2" sm="2" />
+                </v-row>
+            </v-form>
+            <!-- Already registered notification -->
+            <v-row v-if="currentPage == PAGE_TYPE.ALREADY_REGISTERED">
+                Already registered.
             </v-row>
-        </v-form>
-    </v-row>
+            <!-- Confirm cancel. -->
+            <v-row v-if="currentPage == PAGE_TYPE.CONFIRM_CANCEL">
+                Confirm cancel.
+            </v-row>
+            <!-- Enter avatar and display name -->
+            <div v-if="currentPage == PAGE_TYPE.DISPLAY_NAME" class="full-width">
+                <v-row class="carousel-container ml-0">
+                    <v-carousel
+                        height="400"
+                        show-arrows
+                        hide-delimiters
+                        class="carousel"
+                    >
+                        <template v-slot:prev="{ props }">
+                            <v-btn
+                                class="button-carousel ma-2"
+                                variant="text"
+                                icon="mdi-chevron-left"
+                                @click="props.onClick"
+                            ></v-btn>
+                        </template>
+                        <template v-slot:next="{ props }">
+                            <v-btn
+                                class="button-carousel ma-2"
+                                variant="text"
+                                icon="mdi-chevron-right"
+                                @click="props.onClick"
+                            ></v-btn>
+                        </template>
+                        <v-carousel-item
+                            v-for="(slide, i) in slides"
+                            :key="i"
+                        >
+                            <img src="@/assets/Avatar/1.svg">
+                        </v-carousel-item>
+                    </v-carousel>
+                </v-row>
+                <v-row class="mt-4 mb-2">
+                    <p class="label-text-bg white full-width center">
+                        Enter a display name
+                    </p>
+                </v-row>
+                <v-row class="mt-4 relative">
+                    <v-text-field 
+                        label="Username"
+                        class="form-textfield dark-textfield" 
+                        variant="solo"
+                        density="comfortable"
+                        v-model="userName"
+                        :onfocus="handleOnUserNameInputFocus"
+                        :onblur="handleOnUserNameInputBlur"
+                    />
+                    <ValidationBox
+                        v-if="isShowUsernameValidation"
+                        title="This is the name others will see on Blue.game"
+                        :descriptionList="userNameValidationStrList"
+                        :validationList="userNameValidationList"
+                    />
+                </v-row>
+                <v-row>
+                    <v-btn
+                        class="ma-3 mt-8 button-bright"
+                        width="-webkit-fill-available"
+                        height="60px"
+                        :disabled="!validateUserName()"
+                        :onclick="handleUsernameSubmit"
+                    >
+                        Submit
+                    </v-btn>
+                </v-row>
+            </div>
+        </v-row>
+        <v-btn
+            class="close-button"
+            icon="true"
+            @click="$emit('close')"
+        >
+            <v-icon :color="currentPage === PAGE_TYPE.DISPLAY_NAME ? '#7782AA' : '#FFFFFF'">
+                mdi-close
+            </v-icon>
+        </v-btn>
     </div>
-  </template>
-  <script lang="ts">
-  import { toRefs } from 'vue';
-import { computed } from 'vue';
-import { defineComponent, reactive } from 'vue'
-  
-  const Signup = defineComponent({
+</template>
+<script lang="ts">
+import { defineComponent, reactive, toRefs, computed } from 'vue';
+import ValidationBox from '@/components/Signup/ValidationBox.vue';
+import SignupHeader from '@/components/Signup/Header.vue';
+
+const Signup = defineComponent({
+    components: {
+        ValidationBox,
+        SignupHeader,
+    },
     setup() {
         // initiate component state
         const state = reactive({
+            currentPage: 0,  // default signup form
             dialog: true,
             isAgreed: false,
             iconNameList: [
@@ -150,19 +218,75 @@ import { defineComponent, reactive } from 'vue'
                 "Tiktok",
                 "Linkedin",
             ],
+            PAGE_TYPE: {
+                SIGNUP_FORM: 0,
+                CONFIRM_CANCEL: 1,
+                ALREADY_REGISTERED: 2,
+                DISPLAY_NAME: 3,
+            },
             formData: {
                 emailAddress: "",
                 password: "",
                 promoCode: "",
                 isAgreed: false,
             },
+            userName: "",
+            isShowPassword: false,
+            // isShowEmailValidaton: true,
             isShowEmailValidaton: false,
+            // isShowPasswordValidation: true,
             isShowPasswordValidation: false,
+            isShowUsernameValidation: false,
+            passwordValidationStrList: [
+                "8-30 Characters in length",
+                "Contains one upper and one lowercase character",
+                "Contains a number",
+            ],
+            userNameValidationStrList: [
+                "2-20 characters in length",
+                "Nickname must not be like your email",
+            ],
+            colors: [
+                'indigo',
+                'warning',
+                'pink darken-2',
+                'red lighten-1',
+                'deep-purple accent-4',
+            ],
+            slides: [
+                'First',
+                'Second',
+                'Third',
+                'Fourth',
+                'Fifth',
+            ],
         });
 
         // computed variables
-        const isFormDataReady = computed(() => {
-            return validateEmail() && validatePassword() && state.formData.isAgreed
+        const isFormDataReady = computed((): boolean => 
+            validateEmail() && validatePassword() && state.formData.isAgreed
+        )
+
+        const passwordValidationList = computed((): boolean[] => {
+            const password = state.formData.password;
+            // 8-30 Characters in length
+            const condition1 = password.length <= 30 && password.length >= 8;
+            // Contains one upper and one lowercase character
+            const condition2 = /[A-Z]/.test(password) && /[a-z]/.test(password);
+            // Contains a number
+            const condition3 = /\d/.test(password);
+
+            return [condition1, condition2, condition3];
+        })
+
+        const userNameValidationList = computed((): boolean[] => {
+            const username = state.userName;
+            // 2-20 characters in length
+            const condition1 = username.length <= 20 && username.length >= 2;
+            // Nickname must not be like your email
+            const condition2 = !(username.toLowerCase().trim() === state.formData.emailAddress.toLowerCase().trim());
+
+            return [condition1, condition2];
         })
 
         // validation functions
@@ -182,12 +306,32 @@ import { defineComponent, reactive } from 'vue'
         }
         
         const validatePassword = (): boolean => {
-            return !!state.formData.password.length;
+            return passwordValidationList.value.reduce((res, item) => res && item, true)
+        }
+        
+        const validateUserName = (): boolean => {
+            return userNameValidationList.value.reduce((res, item) => res && item, true)
         }
 
         // event handler functions, needs to be updated
         const handleOnPasswordInputFocus = (): void => {
             handleValidateEmail();
+            if (validateEmail()) {
+                state.isShowPasswordValidation = true;
+            }
+        }
+
+        const handleOnPasswordInputBlur = (): void => {
+            // state.isShowPasswordValidation = true;
+            state.isShowPasswordValidation = false;
+        }
+
+        const handleOnUserNameInputFocus = (): void => {
+            state.isShowUsernameValidation = true;
+        }
+
+        const handleOnUserNameInputBlur = (): void => {
+            state.isShowUsernameValidation = false;
         }
         
         const handleOnPromoCodeInputFocus = (): void =>  {
@@ -200,16 +344,28 @@ import { defineComponent, reactive } from 'vue'
 
         // handle form submit
         const handleSignupFormSubmit = (): void => {
+            state.currentPage = state.PAGE_TYPE.DISPLAY_NAME;
             console.log('sign up form submit!');
+        }
+
+        const handleUsernameSubmit = (): void => {
+            console.log('user name submit!');
         }
 
         return {
             ...toRefs(state),
             isFormDataReady,
+            passwordValidationList,
+            userNameValidationList,
+            validateUserName,
             handleOnPasswordInputFocus,
+            handleOnPasswordInputBlur,
+            handleOnUserNameInputFocus,
+            handleOnUserNameInputBlur,
             handleOnPromoCodeInputFocus,
             handleOnEmailInputBlur,
             handleSignupFormSubmit,
+            handleUsernameSubmit,
         }
     },
   })
@@ -217,161 +373,23 @@ import { defineComponent, reactive } from 'vue'
   export default Signup
   </script>
   <style lang="scss">
-    // global （need to move to global）
-    .label-text {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 12px;
-        line-height: 15px;
-        color: #7782AA;
-    }
-    .purple {
-        color: #637BF9 !important;
-    }
-    .yellow {
-        color: #F9BC01 !important;
-    }
-    .white {
-        color: #FFFFFF !important;
-    }
-    .black {
-        color: #000000 !important;
-    }
-    .dark-textfield .v-field__field {
-        background-color: #211F31;
-    }
-    .normal-textfield .v-field__field {
-        background-color: #29263C;
-    }
-    .custom-text-field {
-        box-shadow: inset 2px 0px 4px 1px rgba(0, 0, 0, 0.12);
-    }
-    .form-textfield {
-        margin: 12px;
-        height: 48px;
-  
-        div.v-field__field {
-            padding-left: 8px;
-            box-shadow: inset 2px 0px 4px 1px rgba(0, 0, 0, 0.12);
-            border-radius: 12px;
-
-            input {
-                color: white;
-            }
-  
-            label.v-label.v-field-label {
-                color: #7782AA; 
-            }
-        }
-    }
-    // signup containers
+    // container
     .signup-container {
-    }
-    .signup-header {
-        z-index: 1;
-        height: 187px;
-        margin: 0px !important;
-    }
+        background-color: #2E274C;
+        border-radius: 16px !important;
+    } 
+    // wrapper
     .signup-body {
         margin: 0px !important;
-        background: #2E274C;
         padding: 48px;
-        border-radius: 0px 0px 16px 16px;
     }
-    // header
-    .header-text-wrapper {
-        position: relative;
-        left: 71px;
-        top: -29px;
-    }
-    .header-image {
-        position: absolute;
-        top: -10px;
-        right: 9px;
-        visibility: visible;
-        width: 324px;
-        height: 197px;
-    }
-    .header-text {
-        font-family: 'Bauhaus 93';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 28px;
-        line-height: 41px;
-        text-shadow: #522A59 0px 2px 0px;
-    }
-    .header-text2 {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 24px;
-    }
-    .header-background-image {
-        width: 100%;
-        height: 187px;
-        position: absolute;
-        z-index: -1;
-    }
-    .header-logo-image {
-        position: relative;
-        top: 24px;
-        left: 24px;
-    }
+    // close modal button
     .close-button {
         box-shadow: none !important;
         background-color: transparent !important;
         position: absolute !important;
         top: 5px;
         right: 5px;
-    }
-    // email validation component
-    .email-validation-span {
-        margin-top: 22px !important;
-        margin-left: 10px;
-    }
-    .email-validation-img {
-        position: relative;
-        top: 2px;
-    }  
-    
-    .email-validation-container {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        top: -6px
-    }
-    .email-validation-container::after{
-        display: flex;
-        content: "";
-        position: relative;
-        align-self: center;
-        float: right;
-        top: -2px;
-        bottom: 0px;
-        right: 0px;
-        width: 0px;
-        height: 0px;
-        border: 9px solid #211f31;
-        border-right-color: transparent;
-        border-left-color: transparent;
-        border-bottom-color: transparent;
-        z-index: 2;
-        border-right-width: 5px;
-        border-left-width: 5px;
-    }
-    .email-validation {
-        width: 375px;
-        height: 60px;
-        border-radius: 12px;
-        z-index: 2;
-        background: #211F31;
-        box-shadow: inset 2px 0px 4px 1px rgba(0, 0, 0, 0.12);
-        margin: auto;
-        padding-top: 16px;
-        padding-left: 107px;
-        position: relative;
     }
     // divider
     .divide-text {
@@ -400,20 +418,7 @@ import { defineComponent, reactive } from 'vue'
     .social-icon-button {
         background-color: #131828 !important;
     }
-    .signup-button {
-        cursor: pointer;
-        margin: 12px;
-    }
-    // sign in label 
-    .button-text {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 18px;
-        line-height: 22px;
-        color: #000000;
-        text-align: center;
-    }
+    // ask signin text
     .signin-text {
         font-family: 'Inter';
         font-style: normal;
@@ -445,7 +450,10 @@ import { defineComponent, reactive } from 'vue'
     .agreement-checkbox {
         i.mdi-checkbox-blank-outline {
             color: #13121d
-            // color: #211F31
         }
+    }
+    // carousel
+    .carousel-container {
+        width: 100%;
     }
   </style>

@@ -1,19 +1,20 @@
 <template>
-  <div class="text-center">
-    <img src="@/assets/background-image.png" class="background-img">
+  <div>
+    <v-img 
+      src="@/assets/background-image1.png" 
+      class="background-img" 
+    />
+    <v-btn
+      color="deep-purple-darken-3"
+      class="register-button"
+      @click="openDialog"
+    >
+      Register
+    </v-btn>
     <v-dialog
       v-model="dialog"
       width="471"
     >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          color="deep-purple-darken-3"
-          v-bind="props"
-          class="register-button"
-        >
-          Register
-        </v-btn>
-      </template>
       <Signup @close="closeDialog" />
     </v-dialog>
   </div>
@@ -27,16 +28,22 @@
     setup() {
       // initiate component state
       const state = reactive({
-        dialog: false,
+        dialog: true,
+        // dialog: false,
       });
 
+      // methods
       const closeDialog = () => {
         state.dialog = false
+      }
+      const openDialog = () => {
+        state.dialog = true
       }
 
       return {
         ...toRefs(state),
         closeDialog,
+        openDialog,
       }
     },
     components: {
@@ -46,7 +53,8 @@
   
   export default Dashboard
 </script>
-<style>
+
+<style lang="scss">
 .background-img {
   width: 100%;
   margin-bottom: -20px;
