@@ -14,16 +14,35 @@
     />
     <v-btn
       color="deep-purple-darken-3"
-      class="register-button"
-      @click="openDialog"
+      class="register-button text-none"
+      @click="openDialog('signup')"
     >
       {{ t('main.signupButton') }}
     </v-btn>
+    <v-btn
+      color="deep-purple-darken-3"
+      class="login-button button-bright text-none"
+      @click="openDialog('login')"
+    >
+      {{ t('main.loginButton') }}
+    </v-btn>
     <v-dialog
-      v-model="dialog"
+      v-model="signupDialog"
       width="471"
     >
-      <Signup @close="closeDialog" />
+      <Signup 
+        @close="closeDialog('signup')" 
+        @switch="switchDialog('signup')" 
+      />
+    </v-dialog>
+    <v-dialog
+      v-model="loginDialog"
+      width="471"
+    >
+      <Login 
+        @close="closeDialog('login')" 
+        @switch="switchDialog('login')" 
+      />
     </v-dialog>
   </div>
 </template>
@@ -31,11 +50,17 @@
 <script lang="ts">
   import { defineComponent, toRefs, reactive, watch, ref } from 'vue'
   import { useI18n } from 'vue-i18n';
-  import { loadLang, setLang } from '@/locale/index'
+  import { setLang } from '@/locale/index'
   import Signup from '@/components/Signup/index.vue'
-  import { onMounted } from 'vue';
+  import Login from '@/components/Login/index.vue'
+
+  type dialogType = 'login' | 'signup';
 
   const Dashboard = defineComponent({
+    components: {
+      Signup,
+      Login,
+    },
     setup() {
       // translation
       const { t } = useI18n();
@@ -43,16 +68,34 @@
 
       // initiate component state
       const state = reactive({
-        // dialog: true,
-        dialog: false,
+        signupDialog: false,
+        loginDialog: false,
       });
 
       // methods
-      const closeDialog = () => {
-        state.dialog = false
+      const closeDialog = (type: dialogType) => {
+        if (type === 'login') {
+          state.loginDialog = false
+        } else {
+          state.signupDialog = false
+        }
       }
-      const openDialog = () => {
-        state.dialog = true
+      const openDialog = (type: dialogType) => {
+        if (type === 'login') {
+          state.loginDialog = true
+        } else {
+          state.signupDialog = true
+        }
+      }
+
+      const switchDialog = (type: dialogType) => {
+        if (type === 'login') {
+          state.loginDialog = false;
+          state.signupDialog = true;
+        } else {
+          state.loginDialog = true;
+          state.signupDialog = false;
+        }
       }
 
       const toggleLanguage = () => {
@@ -69,13 +112,11 @@
         currentLanguage,
         closeDialog,
         openDialog,
+        switchDialog,
         toggleLanguage,
         t,
       }
     },
-    components: {
-      Signup
-    }
   })
   
   export default Dashboard
@@ -111,6 +152,13 @@
   right: 21.0%;
   top: 1.3%;
   width: 6.3%;
+  height: 4.2% !important;
+}
+.login-button {
+  position: absolute;
+  right: 28%;
+  top: 1.3%;
+  width: 5.6%;
   height: 4.2% !important;
 }
 </style>

@@ -2,7 +2,25 @@ import { langType } from "./lang-base";
 
 export const lang: langType = {
   main: {
-    signupButton: "Register"
+    signupButton: "Register",
+    loginButton: "Login",
+  },
+  login: {
+    formPage: {
+      header: {
+        titleLine1: "Sign in to", 
+        titleLine2: "your account",
+      },
+      button: "Sign in",
+      forgetPassword: "Forgot Password?",
+      donthaveAccount: "Don't have an account yet?",
+      createOne: "Create one now!",
+    },
+    forgotPasswordPage: {
+      title: 'Forgot Password ?',
+      submit: 'Submit',
+      notification: "We've sent you an email with instructions to reset your password",
+    },
   },
   signup: {
     formPage: {

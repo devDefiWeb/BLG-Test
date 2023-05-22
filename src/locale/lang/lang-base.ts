@@ -1,7 +1,25 @@
 export type langType = {
   main: {
     signupButton: string,
+    loginButton: string,
   },
+  login: {
+    formPage: {
+      header: {
+        titleLine1: string, 
+        titleLine2: string,
+      },
+      button: string,
+      forgetPassword: string,
+      donthaveAccount: string,
+      createOne: string,
+    },
+    forgotPasswordPage: {
+      title: string,
+      submit: string,
+      notification: string,
+    },
+  }
   signup: {
     formPage: {
       header: {

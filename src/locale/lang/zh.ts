@@ -2,7 +2,25 @@ import { langType } from "./lang-base";
 
 export const lang: langType = {
   main: {
-    signupButton: "注册"
+    signupButton: "注册",
+    loginButton: "登录",
+  },
+  login: {
+    formPage: {
+      header: {
+        titleLine1: "登录到", 
+        titleLine2: "您的帐户",
+      },
+      button: "登录",
+      forgetPassword: "Forgot Password?",
+      donthaveAccount: "忘记密码?",
+      createOne: "立即创建一个",
+    },
+    forgotPasswordPage: {
+      title: '忘记密码 ?',
+      submit: '提交',
+      notification: '我们已向您发送一封包含重置密码的说明的电子邮件',
+    },
   },
   signup: {
     formPage: {

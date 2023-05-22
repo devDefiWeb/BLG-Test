@@ -79,12 +79,12 @@
                     </v-btn>
                 </v-row>
                 <v-row class="d-flex justify-center mb-6 mt-10">
-                    <!-- <v-col cols="8" class="pr-0"> -->
-                        <p class="signin-text mr-4">{{ t('signup.formPage.alreadyAccount') }}</p>
-                    <!-- </v-col> -->
-                    <!-- <v-col cols="4"> -->
-                        <p class="signin-text2">{{ t('signup.formPage.signIn') }}</p>
-                    <!-- </v-col> -->
+                    <p class="signin-text mr-4">{{ t('signup.formPage.alreadyAccount') }}</p>
+                    <p class="signin-text2"
+                       @click="$emit('switch')"
+                    >
+                        {{ t('signup.formPage.signIn') }}
+                    </p>
                 </v-row>
                 <v-row class="mt-2">
                     <p class="divide-text">
