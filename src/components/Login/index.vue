@@ -111,26 +111,6 @@
                         {{ t('login.forgotPasswordPage.submit') }}
                     </v-btn>
                 </v-row>
-                <v-row class="mt-8">
-                    <v-col cols="8" offset="2">
-                        <div class="d-flex justify-space-around bg-surface-variant social-icon-wrapper">
-                            <v-sheet
-                                v-for="n in 4"
-                                :key="n"
-                                color="#131828"
-                                class="rounded"
-                            >
-                                <v-btn
-                                    color="grey-darken-4"
-                                    class="social-icon-button"  
-                                    icon=""
-                                >
-                                    <img :src="`src/assets/${iconNameList[n - 1]}.svg`" />
-                                </v-btn>
-                            </v-sheet>
-                        </div>
-                    </v-col>
-                </v-row>
             </div>
         </v-row>
         <v-btn
