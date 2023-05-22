@@ -15,7 +15,7 @@
         </v-col>
         <img src="@/assets/bg-image1.svg" class="bg-image">
         <img src="@/assets/logo2.svg" class="logo-image">
-        <img src="@/assets/coin.svg" class="coin-image">
+        <img src="@/assets/coin-bg.svg" class="coin-image">
     </v-row>
 </template>
 
