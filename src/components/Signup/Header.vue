@@ -7,9 +7,9 @@
             </v-row>
             <v-row>
                 <p class="logo-text2 white">
-                    Register at 
+                    {{ t('signup.formPage.header.titleLine1') }} 
                     <br>
-                    BLUE.GAME
+                    {{ t('signup.formPage.header.titleLine2') }} 
                 </p>
             </v-row>
         </v-col>
@@ -21,8 +21,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const SignupHeader = defineComponent({})
+const SignupHeader = defineComponent({
+    setup() {
+        const { t } = useI18n();
+
+        return {
+            t,
+        }
+    }
+})
 
 export default SignupHeader
 </script>

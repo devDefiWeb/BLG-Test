@@ -11,6 +11,9 @@
 .black {
     color: #000000 !important;
 }
+.slate-gray {
+    color: #7782AA;
+}
 .transparent {
     background-color: transparent !important;
 }
@@ -45,15 +48,27 @@
     font-weight: 400;
     font-size: 12px;
     line-height: 15px;
-    color: #7782AA;
 }
-.label-text-bg {
+.label-text-md {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+}
+.label-text-lg {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 700;
     font-size: 24px;
     line-height: 29px;
-    text-align: center;
+}
+.label-text-xl {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 34px;
 }
 // textfield
 .dark-textfield .v-field__field {

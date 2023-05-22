@@ -3,10 +3,10 @@
         <SignupHeader v-if="currentPage !== PAGE_TYPE.DISPLAY_NAME" />
         <v-row class="signup-body pt-6">
             <!-- SIGN UP FORM  -->
-            <v-form v-if="currentPage === PAGE_TYPE.SIGNUP_FORM" ref="form">
+            <v-form v-if="currentPage === PAGE_TYPE.SIGNUP_FORM" ref="form" class="full-width">
                 <v-row class="relative mt-0">
                     <v-text-field 
-                        label="Email Address"
+                        :label="t('signup.formPage.emailAddress')"
                         class="form-textfield dark-textfield" 
                         variant="solo"
                         density="comfortable"
@@ -15,13 +15,13 @@
                     />
                     <ValidationBox
                         v-if="isShowEmailValidaton"
-                        title="Please fill in this field"
-                        :withCautionIcon="false"
+                        :title="t(`signup.formPage.validation.email.${formData.emailAddress.length ? 'title2' : 'title'}`)"
+                        :withCautionIcon="true"
                     />
                 </v-row>
                 <v-row class="mt-2 relative">
                     <v-text-field 
-                        label="Password"
+                        :label="t('signup.formPage.password')"
                         class="form-textfield dark-textfield" 
                         variant="solo"
                         density="comfortable"
@@ -40,7 +40,7 @@
                 </v-row>
                 <v-row class="mt-4">
                     <v-text-field 
-                        label="Referral/Promo Code(Optional)"
+                        :label="t('signup.formPage.promoCode')"
                         class="form-textfield normal-textfield" 
                         variant="solo"
                         density="comfortable"
@@ -52,38 +52,44 @@
                     <v-col cols="1" class="pl-1">
                         <v-checkbox
                             v-model="formData.isAgreed"
-                            color="success"
                             hide-details
+                            icon
                             class="agreement-checkbox"
                         />
                     </v-col>
                     <v-col cols="10">
-                        <p class="agreement-text">
-                            I agree to the <span class="white pointer">User Agreement & confirm</span> I am at least 18 years old
+                        <p :class="currentLanguage === 'en' ? 'agreement-text' : 'agreement-text mt-5'">
+                            {{ t('signup.formPage.agree.prefix') }}
+                            <span class="white pointer">
+                                {{ t('signup.formPage.agree.bold') }}
+                            </span>
+                            {{ t('signup.formPage.agree.suffix') }}
                         </p>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-btn
-                        class="ma-3 button-bright"
+                        class="ma-3 button-bright text-none"
                         width="-webkit-fill-available"
                         height="60px"
                         :disabled="!isFormDataReady"
                         :onclick="handleSignupFormSubmit"
                     >
-                        Sign Up
+                        {{ t('signup.formPage.button') }}
                     </v-btn>
                 </v-row>
-                <v-row>
-                    <v-col cols="8" class="pr-0">
-                        <p class="signin-text">Already have an account? </p>
-                    </v-col>
-                    <v-col cols="4">
-                        <p class="signin-text2">Sign in </p>
-                    </v-col>
+                <v-row class="d-flex justify-center mb-6 mt-10">
+                    <!-- <v-col cols="8" class="pr-0"> -->
+                        <p class="signin-text mr-4">{{ t('signup.formPage.alreadyAccount') }}</p>
+                    <!-- </v-col> -->
+                    <!-- <v-col cols="4"> -->
+                        <p class="signin-text2">{{ t('signup.formPage.signIn') }}</p>
+                    <!-- </v-col> -->
                 </v-row>
                 <v-row class="mt-2">
-                    <p class="divide-text">OR</p>
+                    <p class="divide-text">
+                        {{ t('signup.formPage.divider') }}
+                    </p>
                     <v-divider
                         color="white"
                     />
@@ -109,14 +115,67 @@
                     </v-col>
                 </v-row>
             </v-form>
-            <!-- Already registered notification -->
-            <v-row v-if="currentPage == PAGE_TYPE.ALREADY_REGISTERED">
-                Already registered.
-            </v-row>
             <!-- Confirm cancel. -->
-            <v-row v-if="currentPage == PAGE_TYPE.CONFIRM_CANCEL">
-                Confirm cancel.
-            </v-row>
+            <div v-if="currentPage == PAGE_TYPE.CONFIRM_CANCEL" class="full-width">
+                <v-row class="mt-8">
+                    <p class="label-text-xl white center full-width">
+                        {{ t('signup.confirmCancelPage.title') }}
+                    </p>
+                </v-row>
+                <v-row class="mt-10">
+                    <p class="label-text-md slate-gray center full-width">
+                        {{ t('signup.confirmCancelPage.description') }}
+                    </p>
+                </v-row>
+                <v-row class="mt-8">
+                    <v-btn
+                        class="ma-3 button-bright text-none"
+                        width="-webkit-fill-available"
+                        height="60px"
+                        @click="handleClickContinueButton"
+                    >
+                        {{ t('signup.confirmCancelPage.continue') }}
+                    </v-btn>
+                </v-row>
+                <v-row class="mt-4">
+                    <v-btn
+                        class="ma-3 button-dark text-none"
+                        width="-webkit-fill-available"
+                        height="60px"
+                    >
+                        {{ t('signup.confirmCancelPage.cancel') }}
+                    </v-btn>
+                </v-row>
+            </div>
+            <!-- Already registered notification -->
+            <div v-if="currentPage == PAGE_TYPE.ALREADY_REGISTERED" class="full-width">
+                <v-row class="mt-8">
+                    <p class="label-text-md slate-gray center full-width pl-12 pr-12">
+                        {{ t('signup.alreadyRegisterPage.title') }}
+                    </p>
+                </v-row>
+                <v-row class="mt-12">
+                    <v-btn
+                        class="ma-3 button-bright text-none"
+                        width="-webkit-fill-available"
+                        height="60px"
+                        autocapitalize="off"
+                        @click="handleClickConfirmButton"
+                    >
+                        {{ t('signup.alreadyRegisterPage.confirm') }}
+                    </v-btn>
+                </v-row>
+                <v-row class="mt-4">
+                    <v-btn
+                        class="ma-3 button-dark text-none"
+                        width="-webkit-fill-available"
+                        height="60px"
+                        autocapitalize="off"
+                    >
+                        {{ t('signup.alreadyRegisterPage.cancel') }}
+                    </v-btn>
+                </v-row>
+            </div>
             <!-- Enter avatar and display name -->
             <div v-if="currentPage == PAGE_TYPE.DISPLAY_NAME" class="full-width">
                 <v-row class="carousel-container ml-0">
@@ -128,7 +187,7 @@
                     >
                         <template v-slot:prev="{ props }">
                             <v-btn
-                                class="button-carousel ma-2"
+                                class="button-carousel ma-2 text-none"
                                 variant="text"
                                 icon="mdi-chevron-left"
                                 @click="props.onClick"
@@ -136,7 +195,7 @@
                         </template>
                         <template v-slot:next="{ props }">
                             <v-btn
-                                class="button-carousel ma-2"
+                                class="button-carousel ma-2 text-none"
                                 variant="text"
                                 icon="mdi-chevron-right"
                                 @click="props.onClick"
@@ -151,13 +210,13 @@
                     </v-carousel>
                 </v-row>
                 <v-row class="mt-4 mb-2">
-                    <p class="label-text-bg white full-width center">
-                        Enter a display name
+                    <p class="label-text-lg white full-width center">
+                        {{ t('signup.displayNamePage.title') }}
                     </p>
                 </v-row>
                 <v-row class="mt-4 relative">
                     <v-text-field 
-                        label="Username"
+                        :label="t('signup.displayNamePage.username')"
                         class="form-textfield dark-textfield" 
                         variant="solo"
                         density="comfortable"
@@ -167,20 +226,20 @@
                     />
                     <ValidationBox
                         v-if="isShowUsernameValidation"
-                        title="This is the name others will see on Blue.game"
+                        :title="t('signup.displayNamePage.validation.username.title')"
                         :descriptionList="userNameValidationStrList"
                         :validationList="userNameValidationList"
                     />
                 </v-row>
                 <v-row>
                     <v-btn
-                        class="ma-3 mt-8 button-bright"
+                        class="ma-3 mt-8 button-bright text-none"
                         width="-webkit-fill-available"
                         height="60px"
                         :disabled="!validateUserName()"
-                        :onclick="handleUsernameSubmit"
+                        @click="$emit('close')"
                     >
-                        Submit
+                        {{ t('signup.displayNamePage.submit') }}
                     </v-btn>
                 </v-row>
             </div>
@@ -198,6 +257,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ValidationBox from '@/components/Signup/ValidationBox.vue';
 import SignupHeader from '@/components/Signup/Header.vue';
 
@@ -207,6 +267,9 @@ const Signup = defineComponent({
         SignupHeader,
     },
     setup() {
+        // translation
+        const { t } = useI18n();
+
         // initiate component state
         const state = reactive({
             currentPage: 0,  // default signup form
@@ -238,20 +301,13 @@ const Signup = defineComponent({
             isShowPasswordValidation: false,
             isShowUsernameValidation: false,
             passwordValidationStrList: [
-                "8-30 Characters in length",
-                "Contains one upper and one lowercase character",
-                "Contains a number",
+                t('signup.formPage.validation.password.items[0]'),
+                t('signup.formPage.validation.password.items[1]'),
+                t('signup.formPage.validation.password.items[2]'),
             ],
             userNameValidationStrList: [
-                "2-20 characters in length",
-                "Nickname must not be like your email",
-            ],
-            colors: [
-                'indigo',
-                'warning',
-                'pink darken-2',
-                'red lighten-1',
-                'deep-purple accent-4',
+                t('signup.displayNamePage.validation.username.items[0]'),
+                t('signup.displayNamePage.validation.username.items[1]'),
             ],
             slides: [
                 'First',
@@ -289,6 +345,10 @@ const Signup = defineComponent({
             return [condition1, condition2];
         })
 
+        const currentLanguage = computed((): string => 
+            localStorage.getItem('lang') || 'en'
+        )
+
         // validation functions
         const validateEmail = (): boolean => {
             const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -298,6 +358,7 @@ const Signup = defineComponent({
         }
 
         const handleValidateEmail = (): void => {
+            console.log('234234324');
             if (validateEmail()) {
                 state.isShowEmailValidaton = false;
             } else {
@@ -342,19 +403,29 @@ const Signup = defineComponent({
             handleValidateEmail();
         }
 
+        const handleClickContinueButton = (): void => {
+            state.currentPage = state.PAGE_TYPE.ALREADY_REGISTERED;
+        }
+
+        const handleClickConfirmButton = (): void => {
+            state.currentPage = state.PAGE_TYPE.DISPLAY_NAME;
+        }
+
         // handle form submit
         const handleSignupFormSubmit = (): void => {
-            state.currentPage = state.PAGE_TYPE.DISPLAY_NAME;
+            state.currentPage = state.PAGE_TYPE.CONFIRM_CANCEL;
             console.log('sign up form submit!');
         }
 
         const handleUsernameSubmit = (): void => {
             console.log('user name submit!');
         }
-
+        
         return {
+            t,
             ...toRefs(state),
             isFormDataReady,
+            currentLanguage,
             passwordValidationList,
             userNameValidationList,
             validateUserName,
@@ -364,6 +435,8 @@ const Signup = defineComponent({
             handleOnUserNameInputBlur,
             handleOnPromoCodeInputFocus,
             handleOnEmailInputBlur,
+            handleClickContinueButton,
+            handleClickConfirmButton,
             handleSignupFormSubmit,
             handleUsernameSubmit,
         }
@@ -448,8 +521,23 @@ const Signup = defineComponent({
         color: #7782AA;
     }
     .agreement-checkbox {
+        // i.mdi-checkbox-blank-outline {
+            // color: #13121d
+        // }
+        i.v-icon {
+            color: #211F31;
+            background-color: #01983A;
+            width: 16px;
+            height: 16px;
+            // width: 24px;
+            // height: 24px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
         i.mdi-checkbox-blank-outline {
-            color: #13121d
+            background-color: #211F31;
+            box-shadow: inset 1px 0px 2px 1px rgba(0, 0, 0, 0.11);
+            border-radius: 4px;
         }
     }
     // carousel

@@ -10,7 +10,7 @@
                 width="16" 
                 class="validation-caution-img" 
             />
-            <span class="label-text-sm ml-2 mt-1">
+            <span class="label-text-sm ml-2 mt-1 slate-gray">
                 {{ title }}
             </span>
         </v-row>
@@ -18,7 +18,7 @@
             <v-row
                 v-for="n in descriptionList.length"
                 :key="n"
-                :class="`validation-list-item ${validationList[n - 1] ? 'active' : 'inactive'}`"
+                :class="`validation-list-item full-width ${validationList[n - 1] ? 'active' : 'inactive'}`"
             >
                 <v-icon class="mr-2 validation-item-icon">
                     {{ validationList[n - 1] ? 'mdi-check-circle' : 'mdi-close-circle' }}
